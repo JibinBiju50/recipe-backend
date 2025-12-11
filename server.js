@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGO_URI)
 .catch((err)=>{console.log("error occured during connection..", err)})
 
 app.get('/', (req, res) => {
-  res.send('Backend is running..')
+  res.json('Backend is running..')
 })
 
 //Route to create a recipe POST
