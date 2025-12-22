@@ -18,6 +18,10 @@ const recipeSchema = new mongoose.Schema({
   cookingTime: {
     type: Number, // In minutes
   },
+  image: {
+    type: String,
+    default: '',
+  },
   createdAt: {
     type: Date,
     default: Date.now, // Automatically set the date

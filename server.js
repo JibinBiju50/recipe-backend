@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Recipe = require('./models/Recipe')
 const cors = require('cors');
-
+const {upload} = require('./config/cloudinary');
 const app = express() //create an instance for express
 const port = process.env.PORT; //create a port number
 
@@ -124,6 +124,33 @@ app.put('/api/recipes/:id', async (req, res)=>{
     res.status(500).json({error: err.message})
     console.log("failed to update the recipe")
   }
+})
+
+//Route to upload image
+app.post('/api/upload', upload.single('image'), (req, res) =>{
+  try{
+    //check if file is uploaded
+    if(!req.file){
+      return res.status(400).json({error: "No file uploaded"})
+    }
+    //get the image from the request
+    const imageUrl = req.file.path;
+    console.log("image uploaded successfully", imageUrl)
+    //send the image url back to the frontend
+    res.json({imageUrl})
+    
+  } catch(err){
+    res.status(500).json({error: err.message})
+  }
+})
+
+//Error handler for multer errors
+app.use((err, req, res, next)=>{
+  if(err){
+    console.error("Multer/cloudinary error:", err);
+    return res.status(500).json({error: err.message})
+  }
+  next();
 })
 
 app.listen(port, () => {
