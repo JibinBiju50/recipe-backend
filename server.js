@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 })
 
 //Route to create a recipe POST
-app.post('/api/recipes', async (req, res) =>{
+app.post('/api/v1/recipes', async (req, res) =>{
   try{
     //create a new recipe used by the data send in req.body
     const newRecipe = new Recipe(req.body);
@@ -37,7 +37,7 @@ app.post('/api/recipes', async (req, res) =>{
 })
 
 //Route to get all recipes
-app.get('/api/recipes', async (req, res) =>{
+app.get('/api/v1/recipes', async (req, res) =>{
   try{
     //check if user sent a title query parameter
     const { title } = req.query;
@@ -60,7 +60,7 @@ app.get('/api/recipes', async (req, res) =>{
   }
 })
 
-app.get('/api/recipes/:id', async (req, res) =>{
+app.get('/api/v1/recipes/:id', async (req, res) =>{
   try{
     
     //get the id of the recipe from url
@@ -83,7 +83,7 @@ app.get('/api/recipes/:id', async (req, res) =>{
 
 
 //Route to delete a recipe
-app.delete('/api/recipes/:id', async (req, res) =>{
+app.delete('/api/v1/recipes/:id', async (req, res) =>{
   try{
     //get the id from the url
     const recipeId = req.params.id;
@@ -107,7 +107,7 @@ app.delete('/api/recipes/:id', async (req, res) =>{
 })
 
 //Route to update recipe
-app.put('/api/recipes/:id', async (req, res)=>{
+app.put('/api/v1/recipes/:id', async (req, res)=>{
   try{
     //get id by destructuring object req
     const { id } = req.params;
@@ -127,7 +127,7 @@ app.put('/api/recipes/:id', async (req, res)=>{
 })
 
 //Route to upload image
-app.post('/api/upload', upload.single('image'), (req, res) =>{
+app.post('/api/v1/upload', upload.single('image'), (req, res) =>{
   try{
     //check if file is uploaded
     if(!req.file){
