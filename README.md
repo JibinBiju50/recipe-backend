@@ -1,7 +1,3 @@
-
----
-
-```md
 # Spoonfull – Recipe Management Backend
 
 A RESTful backend API built with Node.js and Express to manage recipes, providing full CRUD functionality and designed for future scalability.
@@ -62,6 +58,8 @@ CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 A reference file .env.example is included in the repository.
+
+---
 
 ## 🚀 Local Setup
 
