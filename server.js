@@ -23,11 +23,8 @@ app.get('/', (req, res) => {
 //Route to create a recipe POST
 app.post('/api/v1/recipes', async (req, res) =>{
   try{
-    //create a new recipe used by the data send in req.body
-    const newRecipe = new Recipe(req.body);
-
-    //save it to the database 
-    const savedRecipe = await newRecipe.save();
+    //create and save a new recipe used by the data send in req.body
+    const savedRecipe = await Recipe.create(req.body);
 
     //send back the saved data
     res.status(201).json(savedRecipe)
@@ -40,7 +37,12 @@ app.post('/api/v1/recipes', async (req, res) =>{
 app.get('/api/v1/recipes', async (req, res) =>{
   try{
     //check if user sent a title query parameter
-    const { title } = req.query;
+    const { title, page = 1, limit = 8 } = req.query;
+    
+    //convert to numbers
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
     
     //create a filter object
     let filter = {}
@@ -49,11 +51,28 @@ app.get('/api/v1/recipes', async (req, res) =>{
     if(title){
       filter.title = {$regex: title, $options: 'i'}
     }
-    //Pass the filter to mongoose
-    const recipes = await Recipe.find(filter);
+    
+    //Get total count for pagination metadata
+    const totalRecipes = await Recipe.countDocuments(filter);
+    const totalPages = Math.ceil(totalRecipes / limitNum);
+    
+    //Pass the filter to mongoose with pagination
+    const recipes = await Recipe.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum);
 
-    //send the list back to client
-    res.json(recipes)
+    //send the list back to client with pagination info
+    res.json({
+      recipes,
+      pagination: {
+        currentPage: pageNum,
+        totalPages,
+        totalRecipes,
+        hasNextPage: pageNum < totalPages,
+        hasPrevPage: pageNum > 1
+      }
+    })
 
   } catch (err){
     res.status(500).json({error:err.message})
@@ -75,6 +94,7 @@ app.get('/api/v1/recipes/:id', async (req, res) =>{
 
     //send the recipe details back to the frontend
     res.json(recipe)
+    
 
   } catch (err){
     res.status(500).json({error:err.message})
